@@ -15,7 +15,7 @@ import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
  */
 @EnableDiscoveryClient
 @SpringBootApplication
-public class CoreResourceAccessMonitorApplication {
+public class CoreResourceMonitorApplication {
 
 	private static Log log = LogFactory.getLog(CoreResourceMonitorApplication.class);
 
