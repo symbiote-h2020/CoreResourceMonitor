@@ -1,0 +1,177 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: Core Resource Monitor
+  description: Monitor the availability of registered resources to regularly update resource status
+  version: "0.1.1"
+# the domain of the service
+host: crm.core.symbiote
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /resource-registration:
+    post:
+      summary: Resource registration
+      description: |
+        add to schedule check availability
+      parameters:
+        - name: resource
+          in: body
+          description: Identifier of the resource to monitor, specifies its monitor scheduling
+          required: true
+          schema: 
+            "$ref": "#/definitions/ResourceSchedule"
+      tags:
+        - MonitorLifecycle
+        - QueueBasedAPI
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Success'
+        400:
+          description: ERROR
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Error'
+  /resource-unregistration:
+    post:
+      summary: Resource unregistration
+      parameters:
+        - name: resource
+          in: body
+          description: Identifier of the resource to monitor, specifies its monitor scheduling
+          required: true
+          schema: {
+            "$ref": "#/definitions/ResourceId"
+          }
+      tags:
+        - MonitorLifecycle
+        - QueueBasedAPI
+      responses:
+        200:
+          description: Successful removal from monitoring scheduler is implicit
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Success'
+        400:
+          description: ERROR
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Error'
+  /resource-update:
+    post:
+      summary: Update resourge registration and scheduling
+      description: |
+        add to schedule check availability
+      parameters:
+        - name: resource
+          in: body
+          description: Identifier of the resource to monitor, specifies its monitor scheduling
+          required: true
+          schema: 
+            "$ref": "#/definitions/ResourceSchedule"
+      tags:
+        - MonitorLifecycle
+        - QueueBasedAPI
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Success'
+        400:
+          description: ERROR
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Error'
+
+  /updateMessage:
+    post:
+      summary: Push-based solution to allow Platform Enablers to update monitor data autonomously
+      parameters:
+        - name: resources
+          in: body
+          description: Identifier of the resource to monitor, specifies its monitor scheduling
+          required: true
+          schema: 
+            "$ref": "#/definitions/ResourceStatusSeq"
+      tags:
+        - MonitorUpdate
+        - HTTPBasedAPI
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Success'
+        400:
+          description: ERROR
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Error'
+  
+
+  
+definitions:
+  Success:
+    type: object
+    properties:
+      success:
+        type: boolean
+  Error:
+    type: object
+    properties:
+      success:
+        type: boolean
+      error_code:
+        type: string
+      error_txt:
+        type: string
+        
+  ResourceId:
+    type: object
+    properties:
+      resource_id:
+        type: string
+        description: Unique identifier representing a specific resource (a monitored object and its scheduling)
+  ResourceSchedule:
+    type: object
+    properties:
+      resource_id:
+        type: string
+        description: Unique identifier representing a specific resource (a monitored object and its scheduling)
+      scheduling:
+        type: object
+        properties:
+          poll_interval:
+            type: number
+            description: seconds. May be zero to disable polling (useful to support push-update)
+        description: Description of product.
+
+  ResourceStatusSeq:
+    type: array
+    items:
+      type: object
+      properties:
+        resource_id:
+          type: string
+        status:
+          type: number
+
+
