@@ -63,7 +63,7 @@ dependencies {
     testCompile ("com.jayway.jsonpath:json-path")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     
-    compile('com.github.symbiote-h2020:SymbIoTeLibraries:w_observ-SNAPSHOT')
+    compile('com.github.symbiote-h2020:SymbIoTeLibraries:develop-SNAPSHOT')
 
 }
 

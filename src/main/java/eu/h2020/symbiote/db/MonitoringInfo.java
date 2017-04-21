@@ -7,14 +7,14 @@ package eu.h2020.symbiote.db;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringResource;
+import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
 
 /**
  *
  * @author Matteo Pardi <m.pardi@nextworks.it>
  */
 @Document(collection="monitoring")
-public class MonitoringInfo extends CloudMonitoringResource {
+public class MonitoringInfo extends CloudMonitoringPlatform {
     
     @Id
     private final String id;
