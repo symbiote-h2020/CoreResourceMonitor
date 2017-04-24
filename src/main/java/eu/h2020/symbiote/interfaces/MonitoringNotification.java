@@ -17,7 +17,7 @@ import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
 public class MonitoringNotification {
     private static final Logger log = LoggerFactory.getLogger(MonitoringNotification.class);
     
-    public String receiveMessage(String message) {
+    public String receiveMessage(byte[] message) {
         String json = "";
         try {
             log.debug("Monitoring notification message received.\n" + message);
