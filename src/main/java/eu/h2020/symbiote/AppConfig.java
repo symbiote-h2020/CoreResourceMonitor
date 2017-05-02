@@ -21,10 +21,10 @@ import org.springframework.context.annotation.Bean;
 @Configuration
 class AppConfig extends AbstractMongoConfiguration {
 
-    @Value("${symbiote.rap.mongo.dbname}")
+    @Value("${crm.mongo.dbname}")
     private String databaseName;
 
-    @Value("${symbiote.rap.mongo.host}")
+    @Value("${crm.mongo.host}")
     private String mongoHost;
 
     @Override

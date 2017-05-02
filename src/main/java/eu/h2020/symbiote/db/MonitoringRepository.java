@@ -5,7 +5,7 @@
  */
 package eu.h2020.symbiote.db;
 
-import eu.h2020.symbiote.db.MonitoringInfo;
+
 import java.util.Optional;
 import java.util.List;
 import org.springframework.stereotype.Repository;

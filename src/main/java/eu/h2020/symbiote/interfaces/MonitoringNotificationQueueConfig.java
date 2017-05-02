@@ -65,7 +65,7 @@ public class MonitoringNotificationQueueConfig {
     }
 
     @Bean
-    MessageListenerAdapter platformPluginListenerAdapter(MonitoringNotification receiver) {
+    MessageListenerAdapter listenerAdapter(MonitoringNotification receiver) {
         return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 }
