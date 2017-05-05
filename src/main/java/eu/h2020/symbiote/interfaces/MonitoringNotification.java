@@ -54,10 +54,10 @@ public class MonitoringNotification {
         }
     }
     
-    private void checkToken(String aamUrl, String tokenString) throws Exception {
+    private void checkToken(String tokenString) throws Exception {
         log.debug("Received a request for the following token: " + tokenString);
         try {
-            SymbIoTeToken token = securityHandler.verifyForeignPlatformToken(aamUrl, tokenString);
+            SymbIoTeToken token = securityHandler.verifyCoreToken(tokenString);
             log.debug("Token " + token + " was verified");
         } catch (TokenVerificationException e) { 
             log.error("Token " + tokenString + "could not be verified");
