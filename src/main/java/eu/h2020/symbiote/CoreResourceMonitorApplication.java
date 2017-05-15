@@ -1,6 +1,6 @@
 package eu.h2020.symbiote;
 
-import eu.h2020.symbiote.commons.security.SecurityHandler;
+import eu.h2020.symbiote.security.SecurityHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +24,6 @@ public class CoreResourceMonitorApplication {
     
     @Bean
     public SecurityHandler securityHandler() {
-        return new SecurityHandler(coreAAMUrl, rabbitHost, securityEnabled);
+        return new SecurityHandler(coreAAMUrl);
     }
 }
