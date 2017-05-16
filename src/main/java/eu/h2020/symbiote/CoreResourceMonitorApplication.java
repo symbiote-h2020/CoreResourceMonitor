@@ -1,6 +1,6 @@
 package eu.h2020.symbiote;
 
-import eu.h2020.symbiote.security.SecurityHandler;
+import eu.h2020.symbiote.security.InternalSecurityHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,20 +10,23 @@ import org.springframework.context.annotation.Bean;
 public class CoreResourceMonitorApplication {
         
     @Value("${rabbit.host}") 
-    private String rabbitHost;
+    private String rabbitMQHostIP;
+
+    @Value("${rabbit.username}") 
+    private String rabbitMQUsername;
+
+    @Value("${rabbit.password}") 
+    private String rabbitMQPassword;
 
     @Value("${symbiote.coreaam.url}") 
     private String coreAAMUrl;
 
-    @Value("${security.enabled}") 
-    private boolean securityEnabled;
-    
     public static void main(String[] args) {
         SpringApplication.run(CoreResourceMonitorApplication.class, args);
     }   
     
     @Bean
-    public SecurityHandler securityHandler() {
-        return new SecurityHandler(coreAAMUrl);
+    public InternalSecurityHandler securityHandler() {
+        return new InternalSecurityHandler(coreAAMUrl, rabbitMQHostIP, rabbitMQUsername, rabbitMQPassword);
     }
 }

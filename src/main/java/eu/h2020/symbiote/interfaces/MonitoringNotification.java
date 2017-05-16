@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
 import eu.h2020.symbiote.security.exceptions.aam.TokenValidationException;
-import eu.h2020.symbiote.security.SecurityHandler;
+import eu.h2020.symbiote.security.InternalSecurityHandler;
 import eu.h2020.symbiote.security.enums.ValidationStatus;
 import eu.h2020.symbiote.security.token.Token;
 import eu.h2020.symbiote.security.exceptions.SecurityHandlerException;
@@ -30,7 +30,7 @@ public class MonitoringNotification {
     MonitoringRepository monitoringRepo;
     
     @Autowired
-    SecurityHandler securityHandler;
+    InternalSecurityHandler securityHandler;
     
     public String receiveMessage(String message) {
         String json = "";
