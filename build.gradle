@@ -11,7 +11,7 @@ if (!hasProperty('mainClass')) {
 
 buildscript {
     ext {
-        springBootVersion = '1.5.3.RELEASE'
+        springBootVersion = '1.5.4.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -63,7 +63,7 @@ dependencies {
     testCompile ("com.jayway.jsonpath:json-path")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     
-    compile('com.github.symbiote-h2020:SymbIoTeLibraries:develop-SNAPSHOT')
+    compile('com.github.symbiote-h2020:SymbIoTeLibraries:0.2.1')
 
 }
 
