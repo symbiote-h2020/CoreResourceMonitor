@@ -6,17 +6,13 @@
 package eu.h2020.symbiote.interfaces;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static eu.h2020.symbiote.CrmDefinitions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
-import eu.h2020.symbiote.security.exceptions.aam.TokenValidationException;
-import eu.h2020.symbiote.security.InternalSecurityHandler;
-import eu.h2020.symbiote.security.enums.ValidationStatus;
-import eu.h2020.symbiote.security.token.Token;
-import eu.h2020.symbiote.security.exceptions.SecurityHandlerException;
-
 import eu.h2020.symbiote.db.MonitoringInfo;
 import eu.h2020.symbiote.db.MonitoringRepository;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -30,8 +26,10 @@ public class MonitoringNotification {
     MonitoringRepository monitoringRepo;
     
     @Autowired
-    InternalSecurityHandler securityHandler;
+
+    RabbitTemplate rabbitTemplate;    
     
+
     public String receiveMessage(String message) {
         String json = "";
         try {
@@ -42,6 +40,8 @@ public class MonitoringNotification {
             CloudMonitoringPlatform msg = mapper.readValue(message, CloudMonitoringPlatform.class);
             
             registerMonitoringNotification(msg);
+            
+            forwardMonitoringNotification(message);
         } catch (Exception e) {
             log.error("Error while processing message:\n" + message + "\n" + e);
         }
@@ -57,41 +57,17 @@ public class MonitoringNotification {
         }
     }
     
-    private void checkToken(String tokenString) throws Exception {
-        log.debug("Received a request for the following token: " + tokenString);
+    private void forwardMonitoringNotification(String message) {
         try {
-            Token token = new Token(tokenString);
-            ValidationStatus status = securityHandler.verifyCoreToken(token);
 
-            switch (status){
-                case VALID: {
-                    log.info("Token is VALID");  
-                    break;
-                }
-                case VALID_OFFLINE: {
-                    log.info("Token is VALID_OFFLINE");  
-                    break;
-                }
-                case EXPIRED: {
-                    log.info("Token is EXPIRED");
-                    throw new TokenValidationException("Token is EXPIRED");
-                }
-                case REVOKED: {
-                    log.info("Token is REVOKED");  
-                    throw new TokenValidationException("Token is REVOKED");
-                }
-                case INVALID: {
-                    log.info("Token is INVALID");  
-                    throw new TokenValidationException("Token is INVALID");
-                }
-                case NULL: {
-                    log.info("Token is NULL");  
-                    throw new TokenValidationException("Token is NULL");
-                }
-            } 
-        } catch (TokenValidationException e) { 
-            log.error("Token " + tokenString + "could not be verified");
+            rabbitTemplate.convertAndSend(CRM_EXCHANGE_OUT,CRM_ROUTING_KEY, message);
+        } catch (Exception e ) {
+            log.error("Error " + e);
         }
     }
     
+    private void checkToken(String tokenString) throws Exception {
+        log.debug("Received a request for the following token: " + tokenString);
+        
+    }    
 }
