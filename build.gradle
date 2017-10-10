@@ -18,10 +18,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE"
+        classpath("io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath group: 'com.cinnober.gradle', name: 'semver-git', version: '2.2.1'
-        classpath 'org.owasp:dependency-check-gradle:1.4.5.1'
+        classpath("com.cinnober.gradle:semver-git:2.2.1")
+        classpath("org.owasp:dependency-check-gradle:1.4.5.1")
     }
 }
 
@@ -84,21 +84,20 @@ dependencies {
             4) never commit build.gradle which has project dependencies active as it will break CI builds
     */
     compile('com.github.symbiote-h2020:SymbIoTeLibraries:1.+') { changing = true }
+    compile('com.github.symbiote-h2020:SymbIoTeSecurity:21.+') { changing = true }
 
     // Spring
     compile('org.springframework.cloud:spring-cloud-starter-config')
     compile('org.springframework.cloud:spring-cloud-starter-eureka')
     compile('org.springframework.cloud:spring-cloud-starter-zipkin')
-    compile('org.springframework.boot:spring-boot-starter-amqp')
-    compile('org.springframework.boot:spring-boot-starter-data-rest')
-    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.cloud:spring-cloud-starter-stream-rabbit')
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
 
-    // tests only
-    testCompile('junit:junit:4.+')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-}
 
+    // Test only
+    testCompile('junit:junit:4.12')
+    testCompile ("org.springframework.boot:spring-boot-starter-test")
+}
 
 // code quality below
 task generateJavaDocs(type: Javadoc) {
