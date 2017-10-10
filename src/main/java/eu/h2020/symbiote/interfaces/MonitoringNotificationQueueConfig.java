@@ -22,8 +22,8 @@ import org.springframework.context.annotation.Configuration;
  * @author Matteo Pardi <m.pardi@nextworks.it>
  */
 @Configuration
-public class MonitoringNotificationQueueConfig {       
-        
+public class MonitoringNotificationQueueConfig {          
+    
     @Bean
     DirectExchange ExchangeOut() {
         return new DirectExchange(CRM_EXCHANGE_OUT, CRM_EXCHANGE_DURABLE, CRM_EXCHANGE_AUTODELETE);

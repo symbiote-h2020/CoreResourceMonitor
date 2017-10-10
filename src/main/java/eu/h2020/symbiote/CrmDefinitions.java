@@ -5,7 +5,6 @@
  */
 package eu.h2020.symbiote;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -13,20 +12,11 @@ import org.springframework.context.annotation.Configuration;
  * @author Matteo Pardi <m.pardi@nextworks.it>
  */
 @Configuration
-public class CrmDefinitions {
-    @Value("${rabbit.exchange.crm.name}")
-    public static String CRM_EXCHANGE_IN;
-    @Value("${rabbit.routingKey.crm.monitoring}")
-    public static String CRM_ROUTING_KEY;
-    @Value("${rabbit.exchange.crm.durable}")
-    public static boolean CRM_EXCHANGE_DURABLE;
-    @Value("${rabbit.exchange.crm.autodelete}")
-    public static boolean CRM_EXCHANGE_AUTODELETE;
-    @Value("${rabbit.exchange.crm.queue}")
-    public static String CRM_MONITORING_QUEUE;
-    
-    @Value("${rabbit.exchange.crm.out.name}")
-    public static String CRM_EXCHANGE_OUT;
-    @Value("${rabbit.exchange.crm.out.queue}")
-    public static String CRM_EXCHANGE_OUT_QUEUE;
+public class CrmDefinitions {    
+    public static String CRM_EXCHANGE_IN = "symbIoTe.CoreResourceMonitor.exchange.in";
+    public static String CRM_MONITORING_QUEUE = "symbIoTe.crm.monitoring.queue.in";
+    public static String CRM_ROUTING_KEY = "monitoring";  
+    public static boolean CRM_EXCHANGE_DURABLE = true;
+    public static boolean CRM_EXCHANGE_AUTODELETE = false;   
+    public static String CRM_EXCHANGE_OUT = "symbIoTe.CoreResourceMonitor.exchange.out";
 }
