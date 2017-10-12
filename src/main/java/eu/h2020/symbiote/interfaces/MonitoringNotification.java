@@ -10,6 +10,7 @@ import static eu.h2020.symbiote.CrmDefinitions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
+import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatformRequest;
 import eu.h2020.symbiote.db.MonitoringInfo;
 import eu.h2020.symbiote.db.MonitoringRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -26,26 +27,22 @@ public class MonitoringNotification {
     MonitoringRepository monitoringRepo;
     
     @Autowired
-
     RabbitTemplate rabbitTemplate;    
     
 
-    public String receiveMessage(String message) {
-        String json = "";
-        try {
-            //checkToken();
-            
+    public void receiveMessage(String message) {
+        try {            
             log.debug("Monitoring notification message received.\n" + message);
             ObjectMapper mapper = new ObjectMapper();
-            CloudMonitoringPlatform msg = mapper.readValue(message, CloudMonitoringPlatform.class);
+            CloudMonitoringPlatformRequest msg = mapper.readValue(message, CloudMonitoringPlatformRequest.class);
+            if(msg.getSecurityRequest() == null)
+                throw new Exception("SecurityRequest is NULL");
             
-            registerMonitoringNotification(msg);
-            
+            registerMonitoringNotification(msg.getBody());
             forwardMonitoringNotification(message);
         } catch (Exception e) {
             log.error("Error while processing message:\n" + message + "\n" + e);
         }
-        return json;
     }
     
     private void registerMonitoringNotification(CloudMonitoringPlatform monitor) {
@@ -65,9 +62,4 @@ public class MonitoringNotification {
             log.error("Error " + e);
         }
     }
-    
-    private void checkToken(String tokenString) throws Exception {
-        log.debug("Received a request for the following token: " + tokenString);
-        
-    }    
 }
