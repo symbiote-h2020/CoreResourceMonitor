@@ -23,4 +23,8 @@ public class MonitoringInfo {
     public MonitoringInfo(CloudMonitoringPlatform platformData) {
         this.platformData = platformData;
     }
+    
+    public String getId() {
+        return id;
+    }
 }
