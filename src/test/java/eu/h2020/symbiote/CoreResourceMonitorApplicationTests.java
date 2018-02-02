@@ -1,9 +1,9 @@
 package eu.h2020.symbiote;
 
+import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringDevice;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
 import eu.h2020.symbiote.db.MonitoringInfo;
 import eu.h2020.symbiote.db.MonitoringRepository;
-import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringDevice;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Test;
