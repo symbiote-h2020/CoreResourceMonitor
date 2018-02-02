@@ -1,9 +1,18 @@
 package eu.h2020.symbiote;
 
+<<<<<<< HEAD
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
 import eu.h2020.symbiote.db.MonitoringInfo;
 import eu.h2020.symbiote.db.MonitoringRepository;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringDevice;
+=======
+import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringDevice;
+import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
+import eu.h2020.symbiote.db.MonitoringInfo;
+import eu.h2020.symbiote.db.MonitoringRepository;
+import eu.h2020.symbiote.cloud.monitoring.model.Metric;
+import java.util.ArrayList;
+>>>>>>> d1665692028ac8126ab766ae4a53c3bc87eb5c60
 import java.util.List;
 import java.util.Optional;
 import org.junit.Test;
