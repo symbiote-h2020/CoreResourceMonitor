@@ -1,9 +1,11 @@
-package eu.h2020.symbiote;
+package eu.h2020.symbiote.crm;
 
+import eu.h2020.symbiote.crm.repository.MonitoringInfo;
+import eu.h2020.symbiote.crm.repository.MonitoringRepository;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringDevice;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
-import eu.h2020.symbiote.db.MonitoringInfo;
-import eu.h2020.symbiote.db.MonitoringRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Test;
@@ -35,15 +37,16 @@ public class CoreResourceMonitorApplicationTests {
         //insert
         String platformId = "pl_test_1";
         String devId = "dev_test_1";
-        int devAvailability = 1;
+        /*int devAvailability = 1;
         int devLoad = 2;
-        String timestamp = "ts";
+        String timestamp = "ts";*/
         CloudMonitoringDevice dev = new CloudMonitoringDevice();
-        dev.setId(devId);
+        dev.setId(devId);/*
         dev.setAvailability(devAvailability);
         dev.setLoad(devLoad);
-        dev.setTimestamp(timestamp);
-        CloudMonitoringDevice [] devList = {dev};
+        dev.setTimestamp(timestamp);*/
+        List<CloudMonitoringDevice> devList = new ArrayList();
+        devList.add(dev);
         MonitoringInfo monitoringInfoResult = addMonitoringInfo(platformId, devList);
         assert(monitoringInfoResult != null);
         String monitoringInfoId = monitoringInfoResult.getId();
@@ -61,18 +64,15 @@ public class CoreResourceMonitorApplicationTests {
         assert(monInfoOptional == null || !monInfoOptional.isPresent());
     }
     
-    private MonitoringInfo addMonitoringInfo(String platformId, CloudMonitoringDevice[] devList) {
+    private MonitoringInfo addMonitoringInfo(String platformId, List<CloudMonitoringDevice> devList) {
         CloudMonitoringPlatform cmp = new CloudMonitoringPlatform();
         if(platformId != null)
-            cmp.setInternalId(platformId);
-        if(devList != null && devList.length > 0)
-            cmp.setDevices(devList);
+            cmp.setPlatformId(platformId);
+        if(devList != null && devList.size()> 0)
+            cmp.setMetrics(devList);
         MonitoringInfo monitoringInfo = new MonitoringInfo(cmp);        
         MonitoringInfo monInfoResult = monitoringRepository.save(monitoringInfo);
         
         return monInfoResult;
     }
-    
-
-    
 }
