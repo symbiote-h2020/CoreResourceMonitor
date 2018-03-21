@@ -6,13 +6,13 @@
 // prefer. In this case NetBeans will not add these tasks but you may rely on
 // your own implementation.
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'eu.h2020.symbiote.CoreResourceMonitorApplication'
+    ext.mainClass = 'CoreResourceMonitorApplication'
 }
 
 // initial extensions to gradle
 buildscript {
     ext {
-        springBootVersion = '1.5.8.RELEASE'
+        springBootVersion = '1.5.10.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -56,7 +56,7 @@ repositories {
 // Spring related configs
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR5"
     }
 }
 
@@ -84,7 +84,7 @@ dependencies {
             4) never commit build.gradle which has project dependencies active as it will break CI builds
     */
 
-    compile('com.github.symbiote-h2020:SymbIoTeLibraries:4.+') { changing = true }
+    compile('com.github.symbiote-h2020:SymbIoTeLibraries:5.+') { changing = true }
 
     // Spring
     compile('org.springframework.cloud:spring-cloud-starter-config')
@@ -92,6 +92,7 @@ dependencies {
     compile('org.springframework.cloud:spring-cloud-starter-zipkin')
     compile('org.springframework.cloud:spring-cloud-starter-stream-rabbit')
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+    compile('org.springframework.boot:spring-boot-starter-data-rest')
 
 
     // Test only

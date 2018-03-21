@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.h2020.symbiote.interfaces;
+package eu.h2020.symbiote.crm.interfaces;
 
-import static eu.h2020.symbiote.CrmDefinitions.*;
+import static eu.h2020.symbiote.crm.resources.CrmDefinitions.*;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -14,6 +14,7 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,12 +25,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MonitoringNotificationQueueConfig {          
     
-    @Bean
+    @Bean(name="exchangeOut")
     DirectExchange ExchangeOut() {
         return new DirectExchange(CRM_EXCHANGE_OUT, CRM_EXCHANGE_DURABLE, CRM_EXCHANGE_AUTODELETE);
     }
     
-    @Bean
+    @Bean(name="exchangeIn")
     TopicExchange ExchangeIn() {
         return new TopicExchange(CRM_EXCHANGE_IN, CRM_EXCHANGE_DURABLE, CRM_EXCHANGE_AUTODELETE);
     }
@@ -50,7 +51,7 @@ public class MonitoringNotificationQueueConfig {
     }
     
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
+    Binding binding(Queue queue, @Qualifier("exchangeIn") TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(CRM_ROUTING_KEY);
     }
 

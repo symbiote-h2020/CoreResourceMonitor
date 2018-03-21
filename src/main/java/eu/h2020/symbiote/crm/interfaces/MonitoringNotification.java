@@ -3,16 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.h2020.symbiote.interfaces;
+package eu.h2020.symbiote.crm.interfaces;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static eu.h2020.symbiote.CrmDefinitions.*;
+import static eu.h2020.symbiote.crm.resources.CrmDefinitions.*;
+
+import eu.h2020.symbiote.crm.managers.AuthorizationManager;
+import eu.h2020.symbiote.crm.managers.AuthorizationResult;
+import eu.h2020.symbiote.crm.repository.MonitoringInfo;
+import eu.h2020.symbiote.crm.repository.MonitoringRepository;
+import eu.h2020.symbiote.security.communication.payloads.SecurityRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatformRequest;
-import eu.h2020.symbiote.db.MonitoringInfo;
-import eu.h2020.symbiote.db.MonitoringRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,7 +31,10 @@ public class MonitoringNotification {
     MonitoringRepository monitoringRepo;
     
     @Autowired
-    RabbitTemplate rabbitTemplate;    
+    RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    AuthorizationManager authManager;
     
 
     public void receiveMessage(String message) {
@@ -35,10 +42,16 @@ public class MonitoringNotification {
             log.debug("Monitoring notification message received.\n" + message);
             ObjectMapper mapper = new ObjectMapper();
             CloudMonitoringPlatformRequest msg = mapper.readValue(message, CloudMonitoringPlatformRequest.class);
-            if(msg.getSecurityRequest() == null)
+            SecurityRequest secReq = msg.getSecurityRequest();
+            if(secReq == null)
                 throw new Exception("SecurityRequest is NULL");
-            
-            registerMonitoringNotification(msg.getBody());
+
+            CloudMonitoringPlatform clMonPlatform = msg.getBody();
+            AuthorizationResult result = authManager.checkNotificationSecured(clMonPlatform.getPlatformId(),secReq);
+            if(!result.isValidated()) {
+                throw new Exception("SecurityRequest is not valid");
+            }
+            registerMonitoringNotification(clMonPlatform);
             forwardMonitoringNotification(message);
         } catch (Exception e) {
             log.error("Error while processing message:\n" + message + "\n" + e);
