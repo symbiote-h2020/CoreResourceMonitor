@@ -15,25 +15,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest({"eureka.client.enabled=false"})
-@TestConfiguration 
+@TestConfiguration
+@ActiveProfiles("test")
 public class CoreResourceMonitorApplicationTests {
     
     private static final Logger log = LoggerFactory.getLogger(CoreResourceMonitorApplication.class);
 
     @Autowired
     private MonitoringRepository monitoringRepository;
-    
-    
+
     @Test
-    public void contextLoads() {
-    }
-    
-    @Test
-    public void testMonitoringInfo() throws Exception{
+    public void testMonitoringInfo() throws Exception {
         //insert
         String platformId = "pl_test_1";
         String devId = "dev_test_1";
