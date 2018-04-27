@@ -1,4 +1,4 @@
-package eu.h2020.symbiote.crm.managers;
+package eu.h2020.symbiote.crm.model.authorization;
 
 /*
  * @author Matteo Pardi <m.pardi@nextworks.it>

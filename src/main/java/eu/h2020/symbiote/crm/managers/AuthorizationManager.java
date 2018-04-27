@@ -1,5 +1,7 @@
 package eu.h2020.symbiote.crm.managers;
 
+import eu.h2020.symbiote.crm.model.authorization.AuthorizationResult;
+import eu.h2020.symbiote.crm.model.authorization.ServiceResponseResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -107,6 +109,22 @@ public class AuthorizationManager {
             //if security is disabled in properties
             return new AuthorizationResult("security disabled", true);
         }
+    }
+
+    public ServiceResponseResult generateServiceResponse() {
+        if (securityEnabled) {
+            try {
+                String serviceResponse = componentSecurityHandler.generateServiceResponse();
+                return new ServiceResponseResult(serviceResponse, true);
+            } catch (SecurityHandlerException e) {
+                e.printStackTrace();
+                return new ServiceResponseResult("", false);
+            }
+        } else {
+            log.debug("generateServiceResponse: Security is disabled");
+            return new ServiceResponseResult("", false);
+        }
+
     }
 
     private void enableSecurity() throws SecurityHandlerException {

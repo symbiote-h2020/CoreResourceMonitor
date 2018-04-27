@@ -8,8 +8,9 @@ package eu.h2020.symbiote.crm.interfaces;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static eu.h2020.symbiote.crm.resources.CrmDefinitions.*;
 
+import eu.h2020.symbiote.core.internal.crm.MonitoringResponseSecured;
 import eu.h2020.symbiote.crm.managers.AuthorizationManager;
-import eu.h2020.symbiote.crm.managers.AuthorizationResult;
+import eu.h2020.symbiote.crm.model.authorization.AuthorizationResult;
 import eu.h2020.symbiote.crm.repository.MonitoringInfo;
 import eu.h2020.symbiote.crm.repository.MonitoringRepository;
 import eu.h2020.symbiote.security.communication.payloads.SecurityRequest;
@@ -37,8 +38,8 @@ public class MonitoringNotification {
     AuthorizationManager authManager;
     
 
-    public void receiveMessage(String message) {
-        try {            
+    public MonitoringResponseSecured receiveMessage(String message) {
+        try {
             log.debug("Monitoring notification message received.\n" + message);
             ObjectMapper mapper = new ObjectMapper();
             CloudMonitoringPlatformRequest msg = mapper.readValue(message, CloudMonitoringPlatformRequest.class);
@@ -53,9 +54,16 @@ public class MonitoringNotification {
             }
             registerMonitoringNotification(clMonPlatform);
             forwardMonitoringNotification(message);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Error while processing message:\n" + message + "\n" + e);
+            MonitoringResponseSecured responseSecured = new MonitoringResponseSecured(500, message, new Object());
+            responseSecured.setServiceResponse(authManager.generateServiceResponse().getServiceResponse());
+            return responseSecured;
         }
+
+        MonitoringResponseSecured responseSecured = new MonitoringResponseSecured(200, "OK", new Object());
+        responseSecured.setServiceResponse(authManager.generateServiceResponse().getServiceResponse());
+        return responseSecured;
     }
     
     private void registerMonitoringNotification(CloudMonitoringPlatform monitor) {
