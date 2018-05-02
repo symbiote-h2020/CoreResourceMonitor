@@ -5,12 +5,9 @@
  */
 package eu.h2020.symbiote.crm.interfaces;
 
-import static eu.h2020.symbiote.crm.resources.CrmDefinitions.*;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -18,13 +15,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static eu.h2020.symbiote.crm.resources.CrmDefinitions.*;
+
 /**
  *
  * @author Matteo Pardi <m.pardi@nextworks.it>
  */
 @Configuration
-public class MonitoringNotificationQueueConfig {          
-    
+public class MonitoringNotificationQueueConfig {
+    private static final Logger log = LoggerFactory.getLogger(MonitoringNotificationQueueConfig.class);
+
     @Bean(name="exchangeOut")
     DirectExchange ExchangeOut() {
         return new DirectExchange(CRM_EXCHANGE_OUT, CRM_EXCHANGE_DURABLE, CRM_EXCHANGE_AUTODELETE);
@@ -52,6 +52,7 @@ public class MonitoringNotificationQueueConfig {
     
     @Bean
     Binding binding(Queue queue, @Qualifier("exchangeIn") TopicExchange exchange) {
+        log.debug("Binding queue: " + queue.getName() + " to exchange: " + exchange.getName() + " with key: " + CRM_ROUTING_KEY);
         return BindingBuilder.bind(queue).to(exchange).with(CRM_ROUTING_KEY);
     }
 
