@@ -59,11 +59,15 @@ public class MonitoringNotification {
             log.error("Error while processing message:\n" + message + "\n" + e);
             MonitoringResponseSecured responseSecured = new MonitoringResponseSecured(500, message, new Object());
             responseSecured.setServiceResponse(authManager.generateServiceResponse().getServiceResponse());
+            log.debug("ServiceResponse = " + responseSecured.getServiceResponse());
+            log.debug("MonitoringResponseSecured = " + responseSecured);
             return responseSecured;
         }
 
         MonitoringResponseSecured responseSecured = new MonitoringResponseSecured(200, "OK", new Object());
         responseSecured.setServiceResponse(authManager.generateServiceResponse().getServiceResponse());
+        log.debug("ServiceResponse = " + responseSecured.getServiceResponse());
+        log.debug("MonitoringResponseSecured = " + responseSecured);
         return responseSecured;
     }
     

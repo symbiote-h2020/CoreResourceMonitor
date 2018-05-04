@@ -117,7 +117,7 @@ public class AuthorizationManager {
                 String serviceResponse = componentSecurityHandler.generateServiceResponse();
                 return new ServiceResponseResult(serviceResponse, true);
             } catch (SecurityHandlerException e) {
-                e.printStackTrace();
+                log.debug("generateServiceResponse threw exception", e);
                 return new ServiceResponseResult("", false);
             }
         } else {
