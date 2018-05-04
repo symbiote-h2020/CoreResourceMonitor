@@ -13,10 +13,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CrmDefinitions {    
-    public static String CRM_EXCHANGE_IN = "symbIoTe.CoreResourceMonitor.exchange.in";
-    public static String CRM_MONITORING_QUEUE = "symbIoTe.crm.monitoring.queue.in";
-    public static String CRM_ROUTING_KEY = "monitoring";  
-    public static boolean CRM_EXCHANGE_DURABLE = true;
-    public static boolean CRM_EXCHANGE_AUTODELETE = false;   
+    public static String CRM_ROUTING_KEY = "monitoring";
     public static String CRM_EXCHANGE_OUT = "symbIoTe.CoreResourceMonitor.exchange.out";
 }

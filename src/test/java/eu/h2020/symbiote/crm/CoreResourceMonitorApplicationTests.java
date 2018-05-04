@@ -1,22 +1,33 @@
 package eu.h2020.symbiote.crm;
 
-import eu.h2020.symbiote.crm.repository.MonitoringInfo;
-import eu.h2020.symbiote.crm.repository.MonitoringRepository;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringDevice;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatformRequest;
+import eu.h2020.symbiote.core.internal.crm.MonitoringResponseSecured;
+import eu.h2020.symbiote.crm.managers.AuthorizationManager;
+import eu.h2020.symbiote.crm.model.authorization.AuthorizationResult;
+import eu.h2020.symbiote.crm.model.authorization.ServiceResponseResult;
+import eu.h2020.symbiote.crm.repository.MonitoringInfo;
+import eu.h2020.symbiote.crm.repository.MonitoringRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest({"eureka.client.enabled=false"})
@@ -29,8 +40,20 @@ public class CoreResourceMonitorApplicationTests {
     @Autowired
     private MonitoringRepository monitoringRepository;
 
+    @Autowired
+    private AuthorizationManager authorizationManager;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Value("${rabbit.exchange.crm.name}")
+    private String crmExchange;
+
+    @Value("${rabbit.routingKey.crm.monitoring}")
+    private String crmRoutingKey;
+
     @Test
-    public void testMonitoringInfo() throws Exception {
+    public void testMonitoringInfo() {
         //insert
         String platformId = "pl_test_1";
         String devId = "dev_test_1";
@@ -59,6 +82,24 @@ public class CoreResourceMonitorApplicationTests {
         monitoringRepository.delete(monitoringInfoResult);
         monInfoOptional = monitoringRepository.findById(monitoringInfoId);
         assert(monInfoOptional == null || !monInfoOptional.isPresent());
+    }
+
+    @Test
+    public void receiveNotificationTest() {
+        String serviceResponse = "serviceResponse";
+        CloudMonitoringPlatform cloudMonitoringPlatform = new CloudMonitoringPlatform();
+        cloudMonitoringPlatform.setPlatformId("platformId");
+
+        doReturn(new AuthorizationResult("OK", true))
+                .when(authorizationManager).checkNotificationSecured(any(), any());
+        doReturn(new ServiceResponseResult(serviceResponse, true))
+                .when(authorizationManager).generateServiceResponse();
+
+        MonitoringResponseSecured responseSecured = (MonitoringResponseSecured) rabbitTemplate
+                .convertSendAndReceive(crmExchange, crmRoutingKey,
+                        new CloudMonitoringPlatformRequest(null, cloudMonitoringPlatform));
+
+        assertEquals(serviceResponse, responseSecured.getServiceResponse());
     }
     
     private MonitoringInfo addMonitoringInfo(String platformId, List<CloudMonitoringDevice> devList) {
