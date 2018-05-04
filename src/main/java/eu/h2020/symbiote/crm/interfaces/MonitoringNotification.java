@@ -38,7 +38,8 @@ public class MonitoringNotification {
     AuthorizationManager authManager;
     
 
-    public MonitoringResponseSecured receiveMessage(String message) {
+    public MonitoringResponseSecured receiveMessage(byte[] body) {
+        String message = new String(body);
         try {
             log.debug("Monitoring notification message received.\n" + message);
             ObjectMapper mapper = new ObjectMapper();
