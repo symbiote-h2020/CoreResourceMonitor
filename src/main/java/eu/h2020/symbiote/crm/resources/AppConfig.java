@@ -34,7 +34,7 @@ class AppConfig extends AbstractMongoConfiguration {
 
     @Override
     public Mongo mongo() throws Exception {
-        return new Mongo();
+        return new MongoClient(this.mongoHost);
     }
 
     @Bean
