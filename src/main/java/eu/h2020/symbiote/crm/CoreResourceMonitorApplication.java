@@ -26,13 +26,14 @@ public class CoreResourceMonitorApplication {
         SpringApplication.run(CoreResourceMonitorApplication.class, args);
     }
 
-    @Bean
+    @Bean(name="noRequeueContainerFactory")
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setConcurrentConsumers(3);
         factory.setMaxConcurrentConsumers(10);
         factory.setMessageConverter(jackson2JsonMessageConverter());
+        factory.setDefaultRequeueRejected(false);
         return factory;
     }
 

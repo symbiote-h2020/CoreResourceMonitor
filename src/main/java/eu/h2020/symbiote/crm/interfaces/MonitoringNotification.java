@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatform;
 import eu.h2020.symbiote.cloud.monitoring.model.CloudMonitoringPlatformRequest;
-import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.Argument;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -49,7 +49,11 @@ public class MonitoringNotification {
                     value = @Queue(value = "${rabbit.queueName.crm.monitoring}",
                             durable = "${rabbit.exchange.crm.durable}",
                             autoDelete = "${rabbit.exchange.crm.autodelete}",
-                            exclusive = "false"),
+                            exclusive = "false",
+                            arguments= {
+                                @Argument(name = "x-message-ttl", 
+                                value="${spring.rabbitmq.template.reply-timeout}", 
+                                type="java.lang.Integer")}),
                     exchange = @Exchange(
                             value = "${rabbit.exchange.crm.name}",
                             ignoreDeclarationExceptions = "true",
@@ -57,8 +61,12 @@ public class MonitoringNotification {
                             autoDelete  = "${rabbit.exchange.crm.autodelete}",
                             internal = "${rabbit.exchange.crm.internal}",
                             type = "${rabbit.exchange.crm.type}"),
-                    key = "${rabbit.routingKey.crm.monitoring}")
+                    key = "${rabbit.routingKey.crm.monitoring}"
+            ),
+            containerFactory = "noRequeueContainerFactory"
     )
+    
+    
     public MonitoringResponseSecured receiveMessage(CloudMonitoringPlatformRequest msg) {
         String message = null;
 
