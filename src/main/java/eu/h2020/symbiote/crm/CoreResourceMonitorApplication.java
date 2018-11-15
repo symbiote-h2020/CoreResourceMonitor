@@ -23,6 +23,8 @@ public class CoreResourceMonitorApplication {
     private String rabbitMQPassword;
 
     public static void main(String[] args) {
+
+        WaitForPort.waitForServices(WaitForPort.findProperty("SPRING_BOOT_WAIT_FOR_SERVICES"));
         SpringApplication.run(CoreResourceMonitorApplication.class, args);
     }
 
